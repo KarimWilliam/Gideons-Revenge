@@ -2,8 +2,12 @@
 
 
 #include "SCharacter.h"
+
+#include "SMagicProjectile.h"
 #include "Camera/CameraComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 
 // Sets default values
@@ -14,8 +18,14 @@ ASCharacter::ASCharacter()
 
 	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>("SpringArmComp");
 	SpringArmComp->SetupAttachment(RootComponent);
+	SpringArmComp->bUsePawnControlRotation=true;
+	
 	CameraComp = CreateDefaultSubobject<UCameraComponent>("CameraComp");
 	CameraComp->SetupAttachment(SpringArmComp);
+	
+	GetCharacterMovement()->bOrientRotationToMovement=true;
+	
+	bUseControllerRotationYaw=false;
 }
 
 // Called when the game starts or when spawned
@@ -23,11 +33,6 @@ void ASCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
-}
-
-void ASCharacter::MoveForward(float value)
-{
-	AddMovementInput(GetActorForwardVector(),value);
 }
 
 // Called every frame
@@ -43,6 +48,47 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	PlayerInputComponent-> BindAxis("MoveForward",this, &ASCharacter::MoveForward);
+	PlayerInputComponent-> BindAxis("MoveRight",this, &ASCharacter::MoveRight);
+	
 	PlayerInputComponent-> BindAxis("Turn",this, &ASCharacter::AddControllerYawInput);
+	PlayerInputComponent-> BindAxis("Lookup",this, &ASCharacter::AddControllerPitchInput);
+
+	PlayerInputComponent-> BindAction("Jump",IE_Pressed,this,&ASCharacter::Jump);
+	PlayerInputComponent-> BindAction("PrimaryAttack",IE_Pressed,this,&ASCharacter::PrimaryAttack);
 }
 
+void ASCharacter::MoveForward(float value)
+{
+	FRotator ControlRot= GetControlRotation();
+	ControlRot.Pitch=0.0f;
+	ControlRot.Roll=0.0f;
+	
+	AddMovementInput(ControlRot.Vector(),value);
+}
+
+void ASCharacter::MoveRight(float value)
+{
+	/*
+	 X= Forward ROLL
+	 Y= Right PITCH
+	 Z= up YAW
+	*/
+	
+	FRotator ControlRot= GetControlRotation();
+	ControlRot.Pitch=0.0f;
+	ControlRot.Roll=0.0f;
+	//ControlRot.Yaw+=90.0f;
+	FVector RightVector = FRotationMatrix(ControlRot).GetScaledAxis(EAxis::Y);
+	
+	AddMovementInput(RightVector,value);
+}
+
+void ASCharacter::PrimaryAttack()
+{
+	FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
+	FTransform SpawnTM=FTransform(GetControlRotation(),HandLocation);
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	
+	GetWorld()->SpawnActor<AActor>(ProjectileClass,SpawnTM,SpawnParams);
+}
