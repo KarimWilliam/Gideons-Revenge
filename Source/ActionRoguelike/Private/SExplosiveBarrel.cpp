@@ -25,9 +25,10 @@ ASExplosiveBarrel::ASExplosiveBarrel()
 	RadialForceComp -> Radius = 500.0f;
 	RadialForceComp -> ImpulseStrength = 2000;
 	RadialForceComp -> bImpulseVelChange = true;
+	RadialForceComp -> AddCollisionChannelToAffect(ECC_WorldDynamic);
 
 	//Radial Explosion
-	MeshComp->OnComponentHit.AddDynamic(this, &ASExplosiveBarrel::OnHit);
+	
 
 
 }
@@ -35,6 +36,12 @@ ASExplosiveBarrel::ASExplosiveBarrel()
 void ASExplosiveBarrel::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	FVector NormalImpulse, const FHitResult& Hit)
 {
+	//Logging
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Art is an explosion"));
+	UE_LOG(LogTemp,Log,TEXT("Art is a BOOM"))
+	UE_LOG(LogTemp,Warning,TEXT("OtherActor: %s, at game time :%f"),*GetNameSafe(OtherActor),GetWorld()->TimeSeconds);
+	FString CombinedString = FString::Printf(TEXT("Hit at location: %s"),*Hit.ImpactPoint.ToString());
+	DrawDebugString(GetWorld(),Hit.ImpactPoint,CombinedString,nullptr,FColor::Green,2.0f,true);
 	RadialForceComp->FireImpulse();
 }
 
@@ -42,7 +49,7 @@ void ASExplosiveBarrel::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherAc
 void ASExplosiveBarrel::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	MeshComp->OnComponentHit.AddDynamic(this, &ASExplosiveBarrel::OnHit);
 	
 }
 

@@ -20,7 +20,9 @@ class ACTIONROGUELIKE_API ASCharacter : public ACharacter
 protected:
 	UPROPERTY(EditAnywhere,Category="Attack")
 	TSubclassOf<AActor> ProjectileClass;
-
+	UPROPERTY(EditAnywhere,Category="Attack")
+	TSubclassOf<AActor> BlackholeClass;
+	
 	UPROPERTY(VisibleAnywhere)
 	USInteractionComponent* InteractionComp;
 	
@@ -48,7 +50,9 @@ protected:
 	void MoveRight(float value);
 	void PrimaryAttack();
 	void PrimaryAttack_TimeElapsed();
+	void SpecialAttack_TimeElapsed();
 	void PrimaryInteract();
+	void SpecialAttack();
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
