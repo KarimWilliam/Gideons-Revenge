@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "SAttributesComponent.h"
 #include "SInteractionComponent.h"
 #include "GameFramework/Character.h"
 #include "SCharacter.generated.h"
@@ -11,6 +12,7 @@ class UCameraComponent;
 class USpringArmComponent;
 class USInteractionComponent;
 class UAnimMontage;
+//class USAttributesComponent;
 
 UCLASS()
 class ACTIONROGUELIKE_API ASCharacter : public ACharacter
@@ -22,6 +24,8 @@ protected:
 	TSubclassOf<AActor> ProjectileClass;
 	UPROPERTY(EditAnywhere,Category="Attack")
 	TSubclassOf<AActor> BlackholeClass;
+	UPROPERTY(EditAnywhere,Category="Attack")
+	TSubclassOf<AActor> TeleportProjectileClass;
 	
 	UPROPERTY(VisibleAnywhere)
 	USInteractionComponent* InteractionComp;
@@ -29,7 +33,13 @@ protected:
 	UPROPERTY(EditAnywhere,Category="Attack")
 	UAnimMontage* AttackAnim;
 
-	FTimerHandle TimerHandle_PrimaryAttack;
+	UPROPERTY(EditAnywhere,Category="Effects")
+	UParticleSystem* CastingEffect;
+
+	UPROPERTY(VisibleAnywhere,Category="Effects")
+	FName HandSocketName;
+
+	FTimerHandle TimerHandle_PrimaryAttack; 
 
 
 public:
@@ -37,6 +47,9 @@ public:
 	ASCharacter();
 
 protected:
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category="Components")
+	USAttributesComponent* AttributeComp;
+	
 	UPROPERTY(VisibleAnywhere)
 	UCameraComponent* CameraComp;
 	
@@ -53,6 +66,14 @@ protected:
 	void SpecialAttack_TimeElapsed();
 	void PrimaryInteract();
 	void SpecialAttack();
+	void Teleport();
+	void Teleport_TimeElapsed();
+
+	UFUNCTION() 
+	void OnHealthChanged(AActor* InstigatorActor, USAttributesComponent* OwningComp, float NewHealth, float Delta);
+
+	virtual void PostInitializeComponents() override;
+	
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
