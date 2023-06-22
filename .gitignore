@@ -50,7 +50,9 @@ Binaries/*
 Plugins/*/Binaries/*
 
 # Content Files
-Content/*
+Content/ParagonGideon
+Content/ParagonMinions
+Content/StarterContent
 
 # Builds
 Build/*

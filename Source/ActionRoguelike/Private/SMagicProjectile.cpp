@@ -20,6 +20,7 @@ ASMagicProjectile::ASMagicProjectile()
 	//SphereComp->OnComponentHit.AddDynamic(this,&ASMagicProjectile::OnCompHit);
 	AudioComp->SetupAttachment(SphereComp);
 	ImpactSound->SetupAttachment(SphereComp);
+
 	
 
 }
@@ -53,7 +54,7 @@ void ASMagicProjectile::OnActorOverlap(UPrimitiveComponent* PrimitiveComponent, 
 	 	if(AttributeComp)
 	 	{
 	 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("we hit something that has attributes"));	
-	 		AttributeComp->ApplyHealthChange(-20.0f);
+	 		AttributeComp->ApplyHealthChange(-Damage);
 	 		UGameplayStatics::PlaySoundAtLocation(GetWorld(),ImpactSound->GetSound(),GetActorLocation(),0.5f);
 	 		UGameplayStatics::PlayWorldCameraShake(GetWorld(),CameraShake,GetActorLocation(),100,500);
 	 		Destroy();
