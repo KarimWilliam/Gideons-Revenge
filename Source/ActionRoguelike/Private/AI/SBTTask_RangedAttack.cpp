@@ -2,7 +2,6 @@
 
 
 #include "AI/SBTTask_RangedAttack.h"
-
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "GameFramework/Character.h"

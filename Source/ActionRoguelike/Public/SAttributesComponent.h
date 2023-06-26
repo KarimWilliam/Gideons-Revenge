@@ -24,6 +24,7 @@ public:
 	float Health;
 	void SetMaxHealth(float MaxH);
 	float GetMaxHealth();
+	float GetHealth();
 
 protected:
 

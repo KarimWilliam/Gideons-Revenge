@@ -23,6 +23,11 @@ float USAttributesComponent::GetMaxHealth()
 	return MaxHealth;
 }
 
+float USAttributesComponent::GetHealth()
+{
+	return Health;
+}
+
 // Called when the game starts
 void USAttributesComponent::BeginPlay()
 {
@@ -52,6 +57,7 @@ bool USAttributesComponent::ApplyHealthChange(float Delta)
 	//call the custom event we made.
 	float ActualDelta= Health-OldHealth;
 	OnHealthChanged.Broadcast(nullptr,this,Health,ActualDelta);
+	DrawDebugString(GetWorld(),GetOwner()->GetActorLocation(),FString::SanitizeFloat(Health),nullptr,FColor::Red,4.f,true);
 	return ActualDelta!=0;
 }
 

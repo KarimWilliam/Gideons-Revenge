@@ -4,8 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Perception/PawnSensingComponent.h"
 #include "SAICharacter.generated.h"
 
+class USAttributesComponent;
 UCLASS()
 class ACTIONROGUELIKE_API ASAICharacter : public ACharacter
 {
@@ -15,13 +17,19 @@ public:
 	// Sets default values for this character's properties
 	ASAICharacter();
 
+
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+	virtual void PostInitializeComponents() override;
 
+
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category="Components")
+	USAttributesComponent* AttributeComp;
+	
+	UPROPERTY(VisibleAnywhere)
+	UPawnSensingComponent* PawnSensingComponent;
+
+	UFUNCTION()
+	void OnPawnSeen(APawn* Pawn);
 public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
 
 };
