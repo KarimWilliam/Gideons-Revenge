@@ -13,7 +13,7 @@ EBTNodeResult::Type USBTTask_HealSelf::ExecuteTask(UBehaviorTreeComponent& Owner
 	{
 		ASAICharacter* Self= Cast<ASAICharacter>(AIController->GetPawn());
 		USAttributesComponent* AttributeComp= Cast<USAttributesComponent>(Self->GetComponentByClass(USAttributesComponent::StaticClass()) );
-		AttributeComp->ApplyHealthChange(50.f);
+		AttributeComp->ApplyHealthChange(Self,50.f);
 		return EBTNodeResult::Succeeded;
 	}
 	return EBTNodeResult::Failed;

@@ -81,6 +81,11 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	
 }
 
+void ASCharacter::HealSelf(float Amount) //100 default 
+{
+	AttributeComp->ApplyHealthChange(this,Amount);
+}
+
 void ASCharacter::MoveForward(float value)
 {
 	FRotator ControlRot= GetControlRotation();

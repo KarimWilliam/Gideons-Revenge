@@ -20,6 +20,9 @@ public:
 
 	virtual void StartPlay() override;
 
+	UFUNCTION(Exec)
+	void KillAll();
+
 
 protected:
 	FTimerHandle TimeHande_SpawnBots;
@@ -41,4 +44,5 @@ protected:
 	UPROPERTY(EditDefaultsOnly,Category="AI")
 	TSubclassOf<AActor> MinionClass;
 
+	
 };

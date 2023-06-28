@@ -10,7 +10,7 @@
 
 ASGameModeBase::ASGameModeBase()
 {
-	SpawnTimerInterval=2.0f;
+	SpawnTimerInterval=5.0f; // run a timer to try and spawn ots every 5 seconds if not enough are alive according to the difficulty curve.
 }
 
 void ASGameModeBase::StartPlay()
@@ -20,10 +20,52 @@ void ASGameModeBase::StartPlay()
 	GetWorldTimerManager().SetTimer(TimeHande_SpawnBots,this,&ASGameModeBase::SpawnBotTimerElapsed,SpawnTimerInterval,true);
 }
 
+void ASGameModeBase::KillAll()
+{
+		for(TActorIterator<ASAICharacter> It(GetWorld()); It; ++It) //TActorIterator returns every actor of the given class in our current level.
+			{
+			ASAICharacter* Bot= *It;
+
+			USAttributesComponent* AttributesComp=  USAttributesComponent::GetAttributes(Bot);
+
+			if(AttributesComp && AttributesComp->IsAlive())
+			{
+				AttributesComp->Kill(this);
+			}
+		}
+}
 
 
 void ASGameModeBase::SpawnBotTimerElapsed()
 {
+
+	//Maximum of 5 bots allive at a time
+	int32 NrOfAliveBots=0;
+	for(TActorIterator<ASAICharacter> It(GetWorld()); It; ++It) //TActorIterator returns every actor of the given class in our current level.
+		{
+		ASAICharacter* Bot= *It;
+
+		USAttributesComponent* AttributesComp=  USAttributesComponent::GetAttributes(Bot);
+
+		if(AttributesComp && AttributesComp->IsAlive())
+		{
+			NrOfAliveBots++;
+		}
+		}
+
+	float MaxBotCount=5.0f;
+
+	if(DifficultyCurve)
+	{
+		MaxBotCount=DifficultyCurve->GetFloatValue(GetWorld()->TimeSeconds);
+	}
+
+	
+	if(NrOfAliveBots>=MaxBotCount)
+	{
+		return;
+	}
+
 	
 	UEnvQueryInstanceBlueprintWrapper* QueryInstance= UEnvQueryManager::RunEQSQuery(this,SpawnBotQuery,this,EEnvQueryRunMode::RandomBest5Pct,nullptr);
 	if(ensure(QueryInstance))
@@ -41,32 +83,6 @@ void ASGameModeBase::OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryIn
 		return;
 	}
 
-	//Maximum of 5 bots allive at a time
-	int32 NrOfAliveBots=0;
-	for(TActorIterator<ASAICharacter> It(GetWorld()); It; ++It)
-	{
-		ASAICharacter* Bot= *It;
-
-		USAttributesComponent* AttributesComp= Cast<USAttributesComponent>(Bot->GetComponentByClass(USAttributesComponent::StaticClass()));
-
-		if(AttributesComp && AttributesComp->IsAlive())
-		{
-			NrOfAliveBots++;
-		}
-	}
-
-	 float MaxBotCount=5.0f;
-
-	if(DifficultyCurve)
-	{
-		MaxBotCount=DifficultyCurve->GetFloatValue(GetWorld()->TimeSeconds);
-	}
-
-	
-	if(NrOfAliveBots>=MaxBotCount)
-	{
-		return;
-	}
 
 
 	TArray<FVector> Locations= QueryInstance->GetResultsAsLocations();

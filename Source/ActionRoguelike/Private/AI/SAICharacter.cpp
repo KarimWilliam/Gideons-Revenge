@@ -4,8 +4,11 @@
 #include "AI/SAICharacter.h"
 
 #include "AIController.h"
+#include "BrainComponent.h"
 #include "SAttributesComponent.h"
+#include "SWorldUserWidget.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Blueprint/UserWidget.h"
 
 // Sets default values
 ASAICharacter::ASAICharacter()
@@ -16,6 +19,8 @@ ASAICharacter::ASAICharacter()
 	PawnSensingComponent = CreateDefaultSubobject<UPawnSensingComponent>("PawnSensingComponent");
 
 	AttributeComp=CreateDefaultSubobject<USAttributesComponent>("AttributeComp");
+
+	TimeToHit="TimeToHit";
 }
 
 void ASAICharacter::PostInitializeComponents()
@@ -23,18 +28,66 @@ void ASAICharacter::PostInitializeComponents()
 	Super::PostInitializeComponents();
 
 	PawnSensingComponent->OnSeePawn.AddDynamic(this,& ASAICharacter::OnPawnSeen);
+
+	AttributeComp->OnHealthChanged.AddDynamic(this,&ASAICharacter::OnHealthChanged); // binds Onhealthchanged that is defined in the attributes comp to this actor.
 }
+
+void ASAICharacter::SetTargetActor(AActor* NewTarget)
+{
+	AAIController* AIC = Cast<AAIController>(GetController());
+	if(AIC)
+	{
+		AIC->GetBlackboardComponent()->SetValueAsObject("TargetActor",NewTarget);
+	}
+}
+
 
 void ASAICharacter::OnPawnSeen(APawn* Pawn)
 {
-	AAIController* AIC= Cast<AAIController>(GetController());
-	if(AIC)
-	{
-	    UBlackboardComponent* BBComp= AIC->GetBlackboardComponent();
-
-		BBComp->SetValueAsObject("TargetActor",Pawn);
+	SetTargetActor(Pawn);
 
 		DrawDebugString(GetWorld(),GetActorLocation(),"Payer Spotted",nullptr,FColor::White,4.f,true);
+	}
+
+
+void ASAICharacter::OnHealthChanged(AActor* InstigatorActor, USAttributesComponent* OwningComp, float NewHealth,
+	float Delta)
+{
+	if(Delta<0) 
+	{
+		if(InstigatorActor !=this) //if damage came from not self set our new target to the one that damaged us.
+		{
+			SetTargetActor(InstigatorActor);
+		}
+
+		if(ActiveHealthBar==nullptr)
+		{
+				ActiveHealthBar= CreateWidget<USWorldUserWidget>(GetWorld(),HealthBarWidgetClass);
+            		if(ActiveHealthBar)
+            		{
+            			ActiveHealthBar->AttachedActor=this;
+            			ActiveHealthBar->AddToViewport();
+            		}
+		}
+	
+		
+		GetMesh()->SetScalarParameterValueOnMaterials(TimeToHit,GetWorld()->TimeSeconds);
+		
+		if(NewHealth <= 0.0f)
+		{
+			//Stop BT
+			AAIController* AIC = Cast<AAIController>(GetController());
+			if(AIC)
+			{
+				AIC->GetBrainComponent()->StopLogic("Killed"); //brain component holds the behavior tree. parent class.
+			}
+			//Ragdoll
+			GetMesh()->SetAllBodiesSimulatePhysics(true);
+			GetMesh()->SetCollisionProfileName("Ragdoll");
+			
+			//set lifespan
+			SetLifeSpan((10.0));
+		}
 	}
 }
 

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "SWorldUserWidget.h"
 #include "GameFramework/Character.h"
 #include "Perception/PawnSensingComponent.h"
 #include "SAICharacter.generated.h"
@@ -19,8 +20,12 @@ public:
 
 
 protected:
+	UPROPERTY(VisibleAnywhere,Category="Effects")
+	FName TimeToHit;
+	
 	virtual void PostInitializeComponents() override;
 
+	void SetTargetActor(AActor* NewTarget);
 
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category="Components")
 	USAttributesComponent* AttributeComp;
@@ -30,6 +35,12 @@ protected:
 
 	UFUNCTION()
 	void OnPawnSeen(APawn* Pawn);
-public:	
 
+	UFUNCTION() 
+	void OnHealthChanged(AActor* InstigatorActor, USAttributesComponent* OwningComp, float NewHealth, float Delta);
+
+	UPROPERTY(EditDefaultsOnly,Category="UI")
+	TSubclassOf<UUserWidget>HealthBarWidgetClass;
+
+	USWorldUserWidget* ActiveHealthBar;
 };

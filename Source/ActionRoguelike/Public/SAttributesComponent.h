@@ -17,7 +17,15 @@ class ACTIONROGUELIKE_API USAttributesComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-public:	
+public:
+
+	UFUNCTION(BlueprintCallable,Category="Attributes")
+	static USAttributesComponent* GetAttributes(AActor* FromActor);
+
+	UFUNCTION(BlueprintCallable,Category="Attributes",meta=(AdvancedDisplay="IsAlive"))
+	static bool IsActorAlive(AActor* Actor);
+
+	
 	// Sets default values for this component's properties
 	USAttributesComponent();
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly,Category="Attributes")
@@ -44,10 +52,13 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	
 	UFUNCTION(BlueprintCallable,Category="Attributes")
-	bool ApplyHealthChange(float Delta);
+	bool ApplyHealthChange(AActor* InstigatorActor, float Delta);
+	
 
 	UPROPERTY(BlueprintAssignable, BlueprintCallable)
 	FOnHealthChanged OnHealthChanged;
+	
+	UFUNCTION( BlueprintCallable)  
+	bool Kill(AActor* InstigatorActor);
 };

@@ -41,7 +41,7 @@ void AHealthPotionPickup::Interact_Implementation(APawn* InstigatorPawn)
 
 	if(AttributeComp->GetMaxHealth()!=AttributeComp->Health)
 	{
-		AttributeComp->ApplyHealthChange(20.0f);
+		AttributeComp->ApplyHealthChange(this,20.0f);
 		SetActorHiddenInGame(true);
 
 		GetWorldTimerManager().SetTimer(HiddenTimerHandler,this,&AHealthPotionPickup::FHiddenTimer, 10.f);

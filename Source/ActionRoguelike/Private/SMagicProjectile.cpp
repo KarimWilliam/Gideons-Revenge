@@ -55,7 +55,7 @@ void ASMagicProjectile::OnActorOverlap(UPrimitiveComponent* PrimitiveComponent, 
 	 	if(AttributeComp)
 	 	{
 	 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("we hit something that has attributes"));	
-	 		AttributeComp->ApplyHealthChange(-Damage);
+	 		AttributeComp->ApplyHealthChange(GetInstigator(),-Damage);
 	 		UGameplayStatics::PlaySoundAtLocation(GetWorld(),ImpactSound->GetSound(),GetActorLocation(),0.2f);
 	 		UGameplayStatics::PlayWorldCameraShake(GetWorld(),CameraShake,GetActorLocation(),100,500);
 	 		Destroy();
