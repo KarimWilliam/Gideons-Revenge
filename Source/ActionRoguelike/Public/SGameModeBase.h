@@ -23,6 +23,8 @@ public:
 	UFUNCTION(Exec)
 	void KillAll();
 
+	virtual void OnActorKilled(AActor* VictimActor,AActor* Killer);
+
 
 protected:
 	FTimerHandle TimeHande_SpawnBots;
@@ -37,12 +39,16 @@ protected:
 	void OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus);
 	UFUNCTION()
 	void SpawnBotTimerElapsed();
+	UFUNCTION()
+	void RespawnPlayerElapsed(AController* Controller);
 
 	UPROPERTY(EditDefaultsOnly,Category="AI")
 	UEnvQuery* SpawnBotQuery;
 
 	UPROPERTY(EditDefaultsOnly,Category="AI")
 	TSubclassOf<AActor> MinionClass;
+
+	
 
 	
 };

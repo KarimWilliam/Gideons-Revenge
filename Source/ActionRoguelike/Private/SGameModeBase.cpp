@@ -5,8 +5,14 @@
 
 #include "EngineUtils.h"
 #include "SAttributesComponent.h"
+#include "SCharacter.h"
+#include "SPlayerState.h"
 #include "AI/SAICharacter.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
+
+//create console command to stop the spawning of bots.
+static TAutoConsoleVariable<bool> CVarSpawnBots(TEXT("su.SpawnBots"),true,TEXT("Enable spawning of bots via timer."),ECVF_Cheat);
+
 
 ASGameModeBase::ASGameModeBase()
 {
@@ -36,8 +42,15 @@ void ASGameModeBase::KillAll()
 }
 
 
+
+
 void ASGameModeBase::SpawnBotTimerElapsed()
 {
+	if(CVarSpawnBots.GetValueOnGameThread())
+	{
+		UE_LOG(LogTemp,Warning,TEXT("SBot spawning disabbled via cvar 'CVSpawnots'."))
+		return;
+	}
 
 	//Maximum of 5 bots allive at a time
 	int32 NrOfAliveBots=0;
@@ -75,6 +88,8 @@ void ASGameModeBase::SpawnBotTimerElapsed()
 	
 }
 
+
+
 void ASGameModeBase::OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus)
 {
 	if(QueryStatus!=EEnvQueryStatus::Success)
@@ -90,5 +105,42 @@ void ASGameModeBase::OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryIn
 	if(Locations.Num()>0)
 	{
 		GetWorld()->SpawnActor<AActor>(MinionClass,Locations[0],FRotator::ZeroRotator);
+	}
+}
+
+void ASGameModeBase::OnActorKilled(AActor* VictimActor, AActor* Killer)
+{
+	if(ASCharacter* Player= Cast<ASCharacter>(VictimActor))
+	{
+		FTimerHandle TimerHandle_TRespawnDelay;
+		//Delegate is needed when the function hat will fire after the timer elapses has input variables.
+		FTimerDelegate Delegate;
+		Delegate.BindUFunction(this,"RespawnPlayerElapsed",Player->GetController());
+		float RespawnDelay=2.0;
+		GetWorldTimerManager().SetTimer(TimerHandle_TRespawnDelay,Delegate,RespawnDelay,false);
+	}
+
+
+if(ASAICharacter* Bot= Cast<ASAICharacter>(VictimActor))
+	{
+		if(ASCharacter* PC= Cast<ASCharacter>(Killer))
+		{
+			if(ASPlayerState* PlayerState=Cast<ASPlayerState> (PC->GetPlayerState()))
+			{
+				//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("we earned some mulla"));	
+				PlayerState->ApplyCreditChange(100);
+			}
+		}
+	}
+	UE_LOG(LogTemp,Log,TEXT("OnActorKiller Victim: %s, Killer: %s"),*GetNameSafe(VictimActor),*GetNameSafe(Killer));
+	
+}
+
+void ASGameModeBase::RespawnPlayerElapsed(AController* Controller)
+{
+	if(Controller)
+	{
+		Controller->UnPossess();
+		RestartPlayer(Controller);
 	}
 }

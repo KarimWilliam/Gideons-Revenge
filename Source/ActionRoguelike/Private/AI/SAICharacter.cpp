@@ -9,6 +9,8 @@
 #include "SWorldUserWidget.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/CapsuleComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 ASAICharacter::ASAICharacter()
@@ -21,6 +23,10 @@ ASAICharacter::ASAICharacter()
 	AttributeComp=CreateDefaultSubobject<USAttributesComponent>("AttributeComp");
 
 	TimeToHit="TimeToHit";
+
+	//have projectiles hit the mesh instead of the capsule.
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_WorldDynamic,ECR_Ignore);
+	GetMesh()->SetGenerateOverlapEvents(true);
 }
 
 void ASAICharacter::PostInitializeComponents()
@@ -73,7 +79,7 @@ void ASAICharacter::OnHealthChanged(AActor* InstigatorActor, USAttributesCompone
 		
 		GetMesh()->SetScalarParameterValueOnMaterials(TimeToHit,GetWorld()->TimeSeconds);
 		
-		if(NewHealth <= 0.0f)
+		if(NewHealth <= 0.0f)//he died
 		{
 			//Stop BT
 			AAIController* AIC = Cast<AAIController>(GetController());
@@ -84,7 +90,9 @@ void ASAICharacter::OnHealthChanged(AActor* InstigatorActor, USAttributesCompone
 			//Ragdoll
 			GetMesh()->SetAllBodiesSimulatePhysics(true);
 			GetMesh()->SetCollisionProfileName("Ragdoll");
-			
+
+			GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+			GetCharacterMovement()->DisableMovement();
 			//set lifespan
 			SetLifeSpan((10.0));
 		}

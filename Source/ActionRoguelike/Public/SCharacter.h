@@ -20,26 +20,26 @@ class ACTIONROGUELIKE_API ASCharacter : public ACharacter
 	GENERATED_BODY()
 
 protected:
-	UPROPERTY(EditAnywhere,Category="Attack")
+	UPROPERTY(EditAnywhere, Category="Attack")
 	TSubclassOf<AActor> ProjectileClass;
-	UPROPERTY(EditAnywhere,Category="Attack")
+	UPROPERTY(EditAnywhere, Category="Attack")
 	TSubclassOf<AActor> BlackholeClass;
-	UPROPERTY(EditAnywhere,Category="Attack")
+	UPROPERTY(EditAnywhere, Category="Attack")
 	TSubclassOf<AActor> TeleportProjectileClass;
-	
+
 	UPROPERTY(VisibleAnywhere)
 	USInteractionComponent* InteractionComp;
-	
-	UPROPERTY(EditAnywhere,Category="Attack")
+
+	UPROPERTY(EditAnywhere, Category="Attack")
 	UAnimMontage* AttackAnim;
 
-	UPROPERTY(EditAnywhere,Category="Effects")
+	UPROPERTY(EditAnywhere, Category="Effects")
 	UParticleSystem* CastingEffect;
 
-	UPROPERTY(VisibleAnywhere,Category="Effects")
+	UPROPERTY(VisibleAnywhere, Category="Effects")
 	FName HandSocketName;
 
-	FTimerHandle TimerHandle_PrimaryAttack; 
+	FTimerHandle TimerHandle_PrimaryAttack;
 
 
 public:
@@ -47,14 +47,16 @@ public:
 	ASCharacter();
 
 protected:
-	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category="Components")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
 	USAttributesComponent* AttributeComp;
-	
+
 	UPROPERTY(VisibleAnywhere)
 	UCameraComponent* CameraComp;
-	
+
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* SpringArmComp;
+
+	virtual FVector GetPawnViewLocation() const override;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -69,20 +71,19 @@ protected:
 	void Teleport();
 	void Teleport_TimeElapsed();
 
-	UFUNCTION() 
+	UFUNCTION()
 	void OnHealthChanged(AActor* InstigatorActor, USAttributesComponent* OwningComp, float NewHealth, float Delta);
 
 	virtual void PostInitializeComponents() override;
-	
-public:	
+
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	
+
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	UFUNCTION(Exec)
-	void HealSelf(float Amount=100);
-
+	void HealSelf(float Amount = 100);
 };

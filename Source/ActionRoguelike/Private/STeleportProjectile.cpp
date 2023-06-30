@@ -11,7 +11,7 @@ class UParticleSystemComponent;
 
 ASTeleportProjectile::ASTeleportProjectile()
 {
-	DetEffectComp=CreateDefaultSubobject<UParticleSystemComponent>("DetEffectComp");
+	DetEffectComp = CreateDefaultSubobject<UParticleSystemComponent>("DetEffectComp");
 	DetEffectComp->SetupAttachment(RootComponent);
 }
 
@@ -20,30 +20,29 @@ void ASTeleportProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 	SphereComp->OnComponentHit.AddDynamic(this, &ASTeleportProjectile::OnHit);
-	GetWorldTimerManager().SetTimer(TimerHandle_DashAttack,this,&ASTeleportProjectile::Detonate, 0.8f);
-	
+	GetWorldTimerManager().SetTimer(TimerHandle_DashAttack, this, &ASTeleportProjectile::Detonate, 0.8f);
 }
 
 void ASTeleportProjectile::Detonate()
 {
 	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Art is an explosion"));
-	MovementComp->Velocity=FVector(0,0,0);
+	MovementComp->Velocity = FVector(0, 0, 0);
 	DetEffectComp->Activate();
-	GetWorldTimerManager().SetTimer(TimerHandle_TeleportAttack,this,&ASTeleportProjectile::Teleport, 0.2f);
+	GetWorldTimerManager().SetTimer(TimerHandle_TeleportAttack, this, &ASTeleportProjectile::Teleport, 0.2f);
 }
 
 void ASTeleportProjectile::Teleport()
 {
 	Destroy();
-	GetInstigator()->SetActorLocation(GetActorLocation(),false); //Better to use TeleportTo()
-	const FRotator NewRot (GetInstigator()->GetController()->GetControlRotation().Pitch,GetActorRotation().Yaw,GetInstigator()->GetController()->GetControlRotation().Roll);
+	GetInstigator()->SetActorLocation(GetActorLocation(), false); //Better to use TeleportTo()
+	const FRotator NewRot(GetInstigator()->GetController()->GetControlRotation().Pitch, GetActorRotation().Yaw,
+	                      GetInstigator()->GetController()->GetControlRotation().Roll);
 	GetInstigator()->GetController()->SetControlRotation(NewRot);
 }
 
 void ASTeleportProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-	FVector NormalImpulse, const FHitResult& Hit)
+                                 FVector NormalImpulse, const FHitResult& Hit)
 {
 	GetWorldTimerManager().ClearTimer(TimerHandle_DashAttack); // Clear the timer
 	Detonate();
-	
 }

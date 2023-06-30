@@ -4,32 +4,22 @@
 
 #include "CoreMinimal.h"
 #include "PickupBase.h"
-#include "HealthPotionPickup.generated.h"
+#include "CoinPickup.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class ACTIONROGUELIKE_API AHealthPotionPickup : public APickupBase
+class ACTIONROGUELIKE_API ACoinPickup : public APickupBase
 {
 	GENERATED_BODY()
 
-	//void Interact_Implementation(APawn* InstigatorPawn);
-
-public:
+public:	
 	// Sets default values for this actor's properties
-	AHealthPotionPickup();
+	ACoinPickup();
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
 	FTimerHandle HiddenTimerHandler;
 	void FHiddenTimer();
-
 	virtual void Interact_Implementation(APawn* InstigatorPawn) override;
-
-public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 };

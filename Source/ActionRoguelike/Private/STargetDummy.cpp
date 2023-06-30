@@ -33,7 +33,7 @@ void ASTargetDummy::OnHealthChanged(AActor* InstigatorActor, USAttributesCompone
 	{
 		MeshComp->SetScalarParameterValueOnMaterials("TimeToHit",GetWorld()->TimeSeconds);
 	}
-	
+	 
 }
 
 // Called every frame
