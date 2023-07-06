@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "SGenericProjectile.h"
 #include "Kismet/GameplayStatics.h"
 #include "SMagicProjectile.generated.h"
@@ -31,6 +32,9 @@ protected:
 
 	UPROPERTY(EditAnywhere,Category="Damage")
 	float Damage=20;
+
+	UPROPERTY(EditDefaultsOnly,Category="Damage")
+	FGameplayTag ParryTag;
 
 public:	
 	// Called every frame

@@ -3,10 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "SAction.h"
 #include "Components/ActorComponent.h"
 #include "SActionComponent.generated.h"
 
+class USAction;
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class ACTIONROGUELIKE_API USActionComponent : public UActorComponent
@@ -16,6 +18,9 @@ class ACTIONROGUELIKE_API USActionComponent : public UActorComponent
 public:
 	// Sets default values for this component's properties
 	USActionComponent();
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Tags")
+	FGameplayTagContainer ActiveGamePlayTags; //A Tag Container holds a collection of FGameplayTags. All the active tags on the player character
 
 	UFUNCTION(BlueprintCallable, Category="Action")
 	void AddAction(TSubclassOf<USAction> ActionClass);

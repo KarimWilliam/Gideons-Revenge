@@ -4,10 +4,12 @@
 #include "SMagicProjectile.h"
 
 #include "GamePlayFunctionLibrary.h"
+#include "SActionComponent.h"
 #include "SAttributesComponent.h"
 #include "../../../Plugins/Developer/RiderLink/Source/RD/thirdparty/spdlog/include/spdlog/fmt/bundled/color.h"
 #include "Components/AudioComponent.h"
 #include "Components/SphereComponent.h"
+#include "GameFramework/ProjectileMovementComponent.h"
 #include "Particles/ParticleSystemComponent.h"
 
 
@@ -45,8 +47,14 @@ void ASMagicProjectile::OnActorOverlap(UPrimitiveComponent* PrimitiveComponent, 
 {
 	if (OtherActor && OtherActor != GetInstigator())
 	{
-		// USAttributesComponent* AttributeComp = Cast<USAttributesComponent>(
-		// 	OtherActor->GetComponentByClass(USAttributesComponent::StaticClass()));
+		 USActionComponent* ActionComp = Cast<USActionComponent>(OtherActor->GetComponentByClass(USActionComponent::StaticClass()));
+		if (ActionComp && ActionComp->ActiveGamePlayTags.HasTag(ParryTag))
+		{
+			MovementComp->Velocity = -MovementComp->Velocity;
+
+			SetInstigator(Cast<APawn>(OtherActor));
+			return;
+		}
 
 		if(UGamePlayFunctionLibrary::ApplyDirectionalDamage(GetInstigator(),OtherActor,Damage,HitResult))
 		{

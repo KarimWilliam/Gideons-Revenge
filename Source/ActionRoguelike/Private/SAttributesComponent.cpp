@@ -70,7 +70,7 @@ if(Delta<0)
 	//call the custom event we made.
 	float ActualDelta= Health-OldHealth;
 	OnHealthChanged.Broadcast(InstigatorActor,this,Health,ActualDelta);
-	DrawDebugString(GetWorld(),GetOwner()->GetActorLocation(),FString::SanitizeFloat(Health),nullptr,FColor::Red,4.f,true);
+	//DrawDebugString(GetWorld(),GetOwner()->GetActorLocation(),FString::SanitizeFloat(Health),nullptr,FColor::Red,4.f,true);
 
 	//Died
 	if(ActualDelta<0.0f && Health==0.0f)

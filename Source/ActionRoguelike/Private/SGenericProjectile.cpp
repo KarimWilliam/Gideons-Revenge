@@ -26,6 +26,7 @@ ASGenericProjectile::ASGenericProjectile()
 	MovementComp->InitialSpeed = 1000.0f;
 	MovementComp->bRotationRemainsVertical = true;
 	MovementComp->bInitialVelocityInLocalSpace = true;
+	MovementComp->bRotationFollowsVelocity=true;
 
 	AudioComp = CreateDefaultSubobject<UAudioComponent>("AudioComp");
 
