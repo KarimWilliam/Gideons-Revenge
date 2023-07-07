@@ -23,7 +23,11 @@ public:
 	FGameplayTagContainer ActiveGamePlayTags; //A Tag Container holds a collection of FGameplayTags. All the active tags on the player character
 
 	UFUNCTION(BlueprintCallable, Category="Action")
-	void AddAction(TSubclassOf<USAction> ActionClass);
+	void AddAction(AActor* Instigator,TSubclassOf<USAction> ActionClass);
+	
+	UFUNCTION(BlueprintCallable, Category="Action")
+	void RemoveAction(USAction* ActionToRemove);
+	
 
 	UFUNCTION(BlueprintCallable, Category="Action")
 	bool StartActionByName(AActor* Instigator,FName ActionName);
