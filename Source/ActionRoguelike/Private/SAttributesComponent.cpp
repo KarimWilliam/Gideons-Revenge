@@ -5,14 +5,15 @@
 
 #include "SGameModeBase.h"
 
-static TAutoConsoleVariable<float> CVarDamageMultiplier(TEXT("su.DamageMultiplier"),1.0f,TEXT("Gloal Damage modifier for Attribute component"),ECVF_Cheat);
+static TAutoConsoleVariable<float> CVarDamageMultiplier(TEXT("su.DamageMultiplier"),1.0f,TEXT("Global Damage modifier for Attribute component"),ECVF_Cheat);
 
 // Sets default values for this component's properties
 USAttributesComponent::USAttributesComponent()
 {
 	MaxHealth=100.0f;
 	Health=MaxHealth;
-	
+	MaxRage=100.0f;
+	Rage=0;
 }
 
 
@@ -31,11 +32,15 @@ float USAttributesComponent::GetHealth()
 	return Health;
 }
 
+float USAttributesComponent::GetMaxRage()
+{
+	return MaxRage;
+}
+
 // Called when the game starts
 void USAttributesComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	// ...
 	
 }
 
@@ -72,6 +77,16 @@ if(Delta<0)
 	OnHealthChanged.Broadcast(InstigatorActor,this,Health,ActualDelta);
 	//DrawDebugString(GetWorld(),GetOwner()->GetActorLocation(),FString::SanitizeFloat(Health),nullptr,FColor::Red,4.f,true);
 
+	//Get rage when hurt (Am so angry)
+	if(Delta<0)
+	{
+		 float newRage =round(Delta*-0.1);
+		 Rage=FMath::Clamp(newRage+Rage,0.0f,MaxRage);
+		FString RageStr = FString::SanitizeFloat(Rage);
+		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Orange,"Rage: "+RageStr);
+	}
+
+	
 	//Died
 	if(ActualDelta<0.0f && Health==0.0f)
 	{

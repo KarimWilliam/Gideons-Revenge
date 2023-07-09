@@ -9,7 +9,7 @@
 
 class USAttributesComponent;
 
-//Create a custom event that notifies subscribers when something happens (avoids checking with ticks)
+//Create a custom event that notifies subscribers when something happens (avoids checking with ticks) IMPORTANT
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FOnHealthChanged, AActor*, InstigatorActor, USAttributesComponent*,
                                               OwningComp, float, NewHealth, float, Delta);
 
@@ -33,11 +33,16 @@ public:
 	void SetMaxHealth(float MaxH);
 	float GetMaxHealth();
 	float GetHealth();
+	float GetMaxRage();
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Attributes")
+	float Rage;
+
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes")
 	float MaxHealth;
-
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes")
+	float MaxRage;
 
 protected:
 	// Called when the game starts

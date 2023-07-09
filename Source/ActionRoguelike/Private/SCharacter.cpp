@@ -138,13 +138,14 @@ void ASCharacter::OnHealthChanged(AActor* InstigatorActor, USAttributesComponent
                                   float Delta)
 
 {
-	if (NewHealth <= 0.0f && Delta < 0.0f)
+	if (NewHealth <= 0.0f && Delta < 0.0f) // player is dead
 	{
 		DisableInput(Cast<APlayerController>(GetController()));
 	}
-	if (Delta < 0.0f)
+	if (Delta < 0.0f) //Took damage not healing
 	{
 		GetMesh()->SetScalarParameterValueOnMaterials("TimeToHit", GetWorld()->TimeSeconds);
+		
 	}
 }
 
