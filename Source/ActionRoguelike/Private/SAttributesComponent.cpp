@@ -82,8 +82,8 @@ if(Delta<0)
 	{
 		 float newRage =round(Delta*-0.1);
 		 Rage=FMath::Clamp(newRage+Rage,0.0f,MaxRage);
-		FString RageStr = FString::SanitizeFloat(Rage);
-		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Orange,"Rage: "+RageStr);
+		// FString RageStr = FString::SanitizeFloat(Rage);
+		// GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Orange,"Rage: "+RageStr);
 	}
 
 	

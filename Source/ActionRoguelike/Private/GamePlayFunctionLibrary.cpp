@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// This class is used for generic functions accessible to all classes. utility functions like applying damage.
 
 
 #include "GamePlayFunctionLibrary.h"

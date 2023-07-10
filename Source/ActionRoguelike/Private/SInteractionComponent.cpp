@@ -16,8 +16,8 @@ USInteractionComponent::USInteractionComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
-	TraceDistance=500.0f;
-	TraceRadius=30.0f;
+	TraceDistance = 500.0f;
+	TraceRadius = 30.0f;
 	CollisionChannel = ECC_WorldDynamic;
 }
 
@@ -41,7 +41,8 @@ void USInteractionComponent::FindBestInteractable()
 	FCollisionShape Shape;
 	Shape.SetSphere(TraceRadius);
 
-	bool bBlockingHit = GetWorld()->SweepMultiByObjectType(Hits, EyeLocation, End, FQuat::Identity, ObjectQueryParams, Shape);
+	bool bBlockingHit = GetWorld()->SweepMultiByObjectType(Hits, EyeLocation, End, FQuat::Identity, ObjectQueryParams,
+	                                                       Shape);
 
 	FColor LineColor = bBlockingHit ? FColor::Green : FColor::Red;
 
@@ -94,9 +95,10 @@ void USInteractionComponent::FindBestInteractable()
 
 	// if (bDebugDraw)
 	// {
-	// 	DrawDebugLine(GetWorld(), EyeLocation, End, LineColor, false, 2.0f, 0, 0.0f);
+	// 	DrawDebugLine(GetWorld(), EyeLocation, End, LineColor, false, 0.0f, 0, 0.0f);
 	// }
 }
+
 
 // Called when the game starts
 void USInteractionComponent::BeginPlay()
@@ -113,23 +115,29 @@ void USInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	
-	APawn* MyPawn = Cast<APawn>(GetOwner());
-	if (MyPawn->IsLocallyControlled())
+
+	if (const APawn* MyPawn = Cast<APawn>(GetOwner()); MyPawn->IsLocallyControlled()) //code only runs for the locally controlled actor.
 	{
 		FindBestInteractable();
+		
 	}
 }
 
 
-void USInteractionComponent::PrimaryInteract()
+void USInteractionComponent::PrimaryInteract() 
 {
-	APawn* MyPawn = Cast<APawn>(GetOwner());
+	ServerInteract(FocusedActor);
+}
 
-	if (FocusedActor == nullptr)
+void USInteractionComponent::ServerInteract_Implementation(AActor* InFocus)
+{
+	
+	if (InFocus == nullptr)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, TEXT("No focused actor to interact with"));
 		return;
 	}
-	ISGameplayInterface::Execute_Interact(FocusedActor, MyPawn);
+	
+	APawn* MyPawn = Cast<APawn>(GetOwner());
+	ISGameplayInterface::Execute_Interact(InFocus, MyPawn);
 }

@@ -22,6 +22,12 @@ public:
 	float TargetRoll;
 
 protected:
+
+	UPROPERTY(ReplicatedUsing="OnRep_LidOpened", BlueprintReadOnly) //Repnotify  // Calls the given function whenever bLidOpened is updated. 
+	bool bLidOpened;
+
+	UFUNCTION()
+	void OnRep_LidOpened();
 	
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* BaseMesh;

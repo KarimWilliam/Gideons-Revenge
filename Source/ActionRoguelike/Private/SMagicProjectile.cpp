@@ -58,7 +58,6 @@ void ASMagicProjectile::OnActorOverlap(UPrimitiveComponent* PrimitiveComponent, 
 
 		if(UGamePlayFunctionLibrary::ApplyDirectionalDamage(GetInstigator(),OtherActor,Damage,HitResult))
 		{
-				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("we hit something that has attributes"));
 			 	UGameplayStatics::PlaySoundAtLocation(GetWorld(), ImpactSound->GetSound(), GetActorLocation(), 0.2f);
 			 	UGameplayStatics::PlayWorldCameraShake(GetWorld(), CameraShake, GetActorLocation(), 100, 500);
 
@@ -76,6 +75,5 @@ void ASMagicProjectile::OnActorOverlap(UPrimitiveComponent* PrimitiveComponent, 
 void ASMagicProjectile::OnCompHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
                                   FVector NormalImpulse, const FHitResult& Hit)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("we hit something that has no attributes"));
 	Destroy();
 }
