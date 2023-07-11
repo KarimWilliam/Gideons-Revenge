@@ -12,7 +12,7 @@ USActionComponent::USActionComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
-	// ...
+	SetIsReplicatedByDefault(true);
 }
 
 
@@ -26,8 +26,9 @@ void USActionComponent::BeginPlay()
 	}
 }
 
+
 void USActionComponent::TickComponent(float DeltaTime, ELevelTick TickType,
-                                         FActorComponentTickFunction* ThisTickFunction)
+                                      FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
@@ -68,6 +69,11 @@ bool USActionComponent::StartActionByName(AActor* Instigator, FName ActionName)
 				GEngine->AddOnScreenDebugMessage(-1,2.0f,FColor::Red,FailedMsg);
 				continue;
 			}
+			if(!GetOwner()->HasAuthority()) //is client?
+			{
+				ServerStartAction(Instigator,ActionName);
+			}
+			
 			Action->StartAction(Instigator);
 			return true;
 		}
@@ -103,4 +109,9 @@ void USActionComponent::RemoveAction(USAction* ActionToRemove)
 	}
 
 	Actions.Remove(ActionToRemove);
+}
+
+void USActionComponent::ServerStartAction_Implementation(AActor* Instigator, FName ActionName)
+{
+ StartActionByName(Instigator,ActionName);	
 }

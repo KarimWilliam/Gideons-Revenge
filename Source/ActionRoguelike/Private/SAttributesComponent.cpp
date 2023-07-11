@@ -2,8 +2,8 @@
 
 
 #include "SAttributesComponent.h"
-
 #include "SGameModeBase.h"
+#include "Net/UnrealNetwork.h"
 
 static TAutoConsoleVariable<float> CVarDamageMultiplier(TEXT("su.DamageMultiplier"),1.0f,TEXT("Global Damage modifier for Attribute component"),ECVF_Cheat);
 
@@ -14,6 +14,8 @@ USAttributesComponent::USAttributesComponent()
 	Health=MaxHealth;
 	MaxRage=100.0f;
 	Rage=0;
+
+	SetIsReplicatedByDefault(true);
 }
 
 
@@ -36,6 +38,7 @@ float USAttributesComponent::GetMaxRage()
 {
 	return MaxRage;
 }
+
 
 // Called when the game starts
 void USAttributesComponent::BeginPlay()
@@ -69,13 +72,12 @@ if(Delta<0)
 	Delta*=CVarDamageMultiplier.GetValueOnGameThread();
 }
 
-	
-	float OldHealth=Health;
+
+	const float OldHealth=Health;
 	Health = FMath::Clamp(Health+Delta, 0.0f, MaxHealth); //What if maxhealth is changed later on?
 	//call the custom event we made.
-	float ActualDelta= Health-OldHealth;
-	OnHealthChanged.Broadcast(InstigatorActor,this,Health,ActualDelta);
-	//DrawDebugString(GetWorld(),GetOwner()->GetActorLocation(),FString::SanitizeFloat(Health),nullptr,FColor::Red,4.f,true);
+	const float ActualDelta= Health-OldHealth;
+	//OnHealthChanged.Broadcast(InstigatorActor,this,Health,ActualDelta);
 
 	//Get rage when hurt (Am so angry)
 	if(Delta<0)
@@ -86,6 +88,7 @@ if(Delta<0)
 		// GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Orange,"Rage: "+RageStr);
 	}
 
+	MulticastHealthChanged(InstigatorActor,Health,ActualDelta);
 	
 	//Died
 	if(ActualDelta<0.0f && Health==0.0f)
@@ -123,3 +126,17 @@ bool USAttributesComponent::IsActorAlive(AActor* Actor)
 	return false;
 }
 
+void USAttributesComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps)const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(USAttributesComponent,Health);
+	DOREPLIFETIME(USAttributesComponent,MaxHealth);
+
+	//DOREPLIFETIME_CONDITION(USAttributesComponent,MaxHealth,COND_OwnerOnly);
+}
+
+void USAttributesComponent::MulticastHealthChanged_Implementation(AActor* InstigatorActor, float NewHealth, float Delta)
+{
+	OnHealthChanged.Broadcast(InstigatorActor,this,NewHealth,Delta);
+}

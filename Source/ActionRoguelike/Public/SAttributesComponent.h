@@ -28,7 +28,7 @@ public:
 
 	// Sets default values for this component's properties
 	USAttributesComponent();
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes",Replicated)
 	float Health;
 	void SetMaxHealth(float MaxH);
 	float GetMaxHealth();
@@ -39,7 +39,11 @@ public:
 
 
 protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes")
+
+	UFUNCTION(NetMulticast,Reliable) //fire and forget across clients.
+	void MulticastHealthChanged(AActor* InstigatorActor, float NewHealth, float Delta);
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes", Replicated)
 	float MaxHealth;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes")
 	float MaxRage;
