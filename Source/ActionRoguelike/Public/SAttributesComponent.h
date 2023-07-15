@@ -34,7 +34,7 @@ public:
 	float GetMaxHealth();
 	float GetHealth();
 	float GetMaxRage();
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Attributes")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Attributes",Replicated)
 	float Rage;
 
 
@@ -45,7 +45,7 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes", Replicated)
 	float MaxHealth;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes", Replicated)
 	float MaxRage;
 
 protected:

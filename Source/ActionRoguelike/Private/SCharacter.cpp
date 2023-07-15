@@ -141,6 +141,8 @@ void ASCharacter::OnHealthChanged(AActor* InstigatorActor, USAttributesComponent
 	if (NewHealth <= 0.0f && Delta < 0.0f) // player is dead
 	{
 		DisableInput(Cast<APlayerController>(GetController()));
+		SetActorEnableCollision(false);
+		SetLifeSpan(10.0f);
 	}
 	if (Delta < 0.0f) //Took damage not healing
 	{

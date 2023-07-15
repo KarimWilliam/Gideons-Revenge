@@ -2,10 +2,12 @@
 
 
 #include "SPlayerState.h"
+#include "Net/UnrealNetwork.h"
 
 ASPlayerState::ASPlayerState()
 {
 	Credits=0;
+	SetReplicates(true);
 }
 
 int ASPlayerState::GetCredits() const
@@ -26,4 +28,15 @@ bool ASPlayerState::ApplyCreditChange(const int creds)
 	}
 	this->Credits+=creds;
 	return true;
+}
+
+
+
+void ASPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps)const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ASPlayerState,Credits);
+
+	//DOREPLIFETIME_CONDITION(USAttributesComponent,MaxHealth,COND_OwnerOnly);
 }

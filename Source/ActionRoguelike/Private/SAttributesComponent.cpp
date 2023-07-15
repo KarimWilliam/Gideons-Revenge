@@ -132,6 +132,8 @@ void USAttributesComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>
 
 	DOREPLIFETIME(USAttributesComponent,Health);
 	DOREPLIFETIME(USAttributesComponent,MaxHealth);
+	DOREPLIFETIME(USAttributesComponent,Rage);
+	DOREPLIFETIME(USAttributesComponent,MaxRage);
 
 	//DOREPLIFETIME_CONDITION(USAttributesComponent,MaxHealth,COND_OwnerOnly);
 }

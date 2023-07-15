@@ -19,7 +19,7 @@ public:
 
 	
 protected:
-	UPROPERTY(EditDefaultsOnly,Category="PlayerState")
+	UPROPERTY(EditDefaultsOnly,Category="PlayerState",Replicated)
 	int Credits;
 public:
 	UFUNCTION(BlueprintCallable)
