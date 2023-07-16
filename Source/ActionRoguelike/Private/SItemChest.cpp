@@ -33,6 +33,12 @@ void ASItemChest::Tick(float DeltaTime)
 	Super::Tick(DeltaTime); 
 }
 
+void ASItemChest::OnActorLoaded_Implementation()
+{
+	ISGameplayInterface::OnActorLoaded_Implementation();
+	OnRep_LidOpened();
+}
+
 void ASItemChest::Interact_Implementation(APawn* InstigatorPawn)
 {
 	bLidOpened = !bLidOpened;
@@ -52,3 +58,4 @@ void ASItemChest::OnRep_LidOpened()
 	LidMesh->SetRelativeRotation(FRotator(0, 0, CurrPitch));
 
 }
+

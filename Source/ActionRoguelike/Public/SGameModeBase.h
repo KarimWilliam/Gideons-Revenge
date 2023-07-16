@@ -8,6 +8,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "SGameModeBase.generated.h"
 
+class USSaveGame;
 UCLASS()
 
 class ACTIONROGUELIKE_API ASGameModeBase : public AGameModeBase
@@ -27,6 +28,11 @@ public:
 
 
 protected:
+
+	FString SlotName;
+	UPROPERTY()
+	USSaveGame* CurrentSaveGame;
+	
 	FTimerHandle TimeHande_SpawnBots;
 
 	UPROPERTY(EditDefaultsOnly,Category="AI")
@@ -48,7 +54,13 @@ protected:
 	UPROPERTY(EditDefaultsOnly,Category="AI")
 	TSubclassOf<AActor> MinionClass;
 
-	
+	UFUNCTION(BlueprintCallable,Category="SaveGame")
+	void WriteSaveGame();
 
+	void LoadSaveGame();
+
+	void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
+
+	void HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer) override;
 	
 };

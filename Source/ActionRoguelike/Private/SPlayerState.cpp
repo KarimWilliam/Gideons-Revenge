@@ -30,8 +30,6 @@ bool ASPlayerState::ApplyCreditChange(const int creds)
 	return true;
 }
 
-
-
 void ASPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps)const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
@@ -39,4 +37,23 @@ void ASPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLif
 	DOREPLIFETIME(ASPlayerState,Credits);
 
 	//DOREPLIFETIME_CONDITION(USAttributesComponent,MaxHealth,COND_OwnerOnly);
+}
+
+void ASPlayerState::SavePlayerState_Implementation(USSaveGame* SaveObject)
+{
+
+	if(SaveObject)
+	{
+		SaveObject->Credits=Credits;
+	}
+}
+
+void ASPlayerState::LoadPlayerState_Implementation(USSaveGame* SaveObject)
+{
+
+	if(SaveObject)
+	{
+		Credits= SaveObject->Credits;
+		
+	}
 }

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "SSaveGame.h"
 #include "GameFramework/PlayerState.h"
 #include "SPlayerState.generated.h"
 
@@ -20,11 +21,16 @@ public:
 	
 protected:
 	UPROPERTY(EditDefaultsOnly,Category="PlayerState",Replicated)
-	int Credits;
+	int32 Credits;
 public:
 	UFUNCTION(BlueprintCallable)
 	int GetCredits() const;
 	void SetCredits(int creds);
 	bool ApplyCreditChange(int creds);
+
+	UFUNCTION(BlueprintNativeEvent)
+	void SavePlayerState(USSaveGame* SaveObject);
+	UFUNCTION(BlueprintNativeEvent)
+	void LoadPlayerState(USSaveGame* SaveObject);
 	
 };

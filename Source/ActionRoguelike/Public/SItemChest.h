@@ -23,7 +23,7 @@ public:
 
 protected:
 
-	UPROPERTY(ReplicatedUsing="OnRep_LidOpened", BlueprintReadOnly) //Repnotify  // Calls the given function whenever bLidOpened is updated. 
+	UPROPERTY(ReplicatedUsing="OnRep_LidOpened", BlueprintReadOnly, SaveGame) //Repnotify  // Calls the given function whenever bLidOpened is updated. 
 	bool bLidOpened;
 
 	UFUNCTION()
@@ -41,5 +41,7 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	void OnActorLoaded_Implementation() override;
 
 };
