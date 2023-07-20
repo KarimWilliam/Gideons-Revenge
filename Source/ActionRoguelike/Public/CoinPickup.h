@@ -18,6 +18,8 @@ public:
 	// Sets default values for this actor's properties
 	ACoinPickup();
 
+	virtual FText GetInteractText_Implementation(APawn* InstigatorPawn) override;
+
 protected:
 	FTimerHandle HiddenTimerHandler;
 	void FHiddenTimer();

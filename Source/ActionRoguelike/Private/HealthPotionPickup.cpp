@@ -26,6 +26,7 @@ void AHealthPotionPickup::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+
 void AHealthPotionPickup::FHiddenTimer()
 {
 	SetActorHiddenInGame(false);
@@ -55,4 +56,14 @@ void AHealthPotionPickup::Interact_Implementation(APawn* InstigatorPawn)
 			}
 		}
 	}
+}
+
+FText AHealthPotionPickup::GetInteractText_Implementation(APawn* InstigatorPawn)
+{
+	USAttributesComponent* AttributeComp= USAttributesComponent::GetAttributes(InstigatorPawn);
+	if(AttributeComp && AttributeComp->GetHealth()==AttributeComp->GetMaxHealth())
+	{
+		return NSLOCTEXT("InteractableActors","HealthPotion_FullHealthWarning","Already at full health");
+	}
+	return NSLOCTEXT("InteractableActors","HealthPotion_FInteractMessage","Cost 200 Credits. Restores 50 health"); 
 }

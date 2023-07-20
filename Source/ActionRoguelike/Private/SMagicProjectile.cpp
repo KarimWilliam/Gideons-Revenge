@@ -23,6 +23,7 @@ ASMagicProjectile::ASMagicProjectile()
 	//SphereComp->OnComponentHit.AddDynamic(this,&ASMagicProjectile::OnCompHit);
 	AudioComp->SetupAttachment(SphereComp);
 	ImpactSound->SetupAttachment(SphereComp);
+	InitialLifeSpan=12.0f;
 }
 
 // Called when the game starts or when spawned

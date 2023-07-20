@@ -10,6 +10,7 @@
 #include "SPlayerState.h"
 #include "SSaveGame.h"
 #include "AI/SAICharacter.h"
+#include "Engine/AssetManager.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
 #include "GameFramework/GameStateBase.h"
 #include "Kismet/GameplayStatics.h"
@@ -56,11 +57,11 @@ void ASGameModeBase::SpawnBotTimerElapsed()
 {
 	if (CVarSpawnBots.GetValueOnGameThread())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("SBot spawning disabbled via cvar 'CVSpawnots'."))
+		UE_LOG(LogTemp, Warning, TEXT("SBot spawning disabled via cvar 'CVSpawnots'."))
 		return;
 	}
 
-	//Maximum of 5 bots allive at a time
+	//Maximum of 5 bots alive at a time
 	int32 NrOfAliveBots = 0;
 	for (TActorIterator<ASAICharacter> It(GetWorld()); It; ++It)
 	//TActorIterator returns every actor of the given class in our current level.
@@ -112,7 +113,19 @@ void ASGameModeBase::OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryIn
 
 	if (Locations.Num() > 0)
 	{
-		GetWorld()->SpawnActor<AActor>(MinionClass, Locations[0], FRotator::ZeroRotator);
+		if(MonsterTable)
+		{
+			
+			TArray<FMonsterInfoRow*> Rows;
+			MonsterTable->GetAllRows("",Rows);
+
+			//Get Random Enemy
+			int32 RandomIndex=FMath::RandRange(0,Rows.Num()-1);
+			FMonsterInfoRow* SelectedRow=Rows[RandomIndex];
+			
+			GetWorld()->SpawnActor<AActor>(SelectedRow->MonsterData->MonsterClass, Locations[0], FRotator::ZeroRotator);
+		}
+		
 	}
 }
 
@@ -129,8 +142,8 @@ void ASGameModeBase::OnActorKilled(AActor* VictimActor, AActor* Killer)
 	}
 
 
-	if (ASAICharacter* Bot = Cast<ASAICharacter>(VictimActor))
-	{
+	//if (ASAICharacter* Bot = Cast<ASAICharacter>(VictimActor))
+	//{
 		if (ASCharacter* PC = Cast<ASCharacter>(Killer))
 		{
 			if (ASPlayerState* PlayerState = Cast<ASPlayerState>(PC->GetPlayerState()))
@@ -139,7 +152,7 @@ void ASGameModeBase::OnActorKilled(AActor* VictimActor, AActor* Killer)
 				PlayerState->ApplyCreditChange(100);
 			}
 		}
-	}
+	//}
 	UE_LOG(LogTemp, Log, TEXT("OnActorKiller Victim: %s, Killer: %s"), *GetNameSafe(VictimActor), *GetNameSafe(Killer));
 }
 
@@ -148,7 +161,7 @@ void ASGameModeBase::RespawnPlayerElapsed(AController* Controller)
 	if (Controller)
 	{
 		Controller->UnPossess();
-		RestartPlayer(Controller);`
+		RestartPlayer(Controller);
 	}
 }
 
@@ -268,5 +281,33 @@ void ASGameModeBase::HandleStartingNewPlayer_Implementation(APlayerController* N
 	if (PS)
 	{
 		PS->LoadPlayerState(CurrentSaveGame);
+	}
+}
+
+void ASGameModeBase::OnMonsterLoaded(FPrimaryAssetId LoadedId, FVector SpawnLocation)
+{
+	//LogOnScreen(this, "Finished loading.", FColor::Green);
+
+	UAssetManager* Manager = UAssetManager::GetIfValid();
+	if (Manager)
+	{
+		USMonsterData* MonsterData = Cast<USMonsterData>(Manager->GetPrimaryAssetObject(LoadedId));
+		if (MonsterData)
+		{
+			AActor* NewBot = GetWorld()->SpawnActor<AActor>(MonsterData->MonsterClass, SpawnLocation, FRotator::ZeroRotator);
+			if (NewBot)
+			{
+
+				// Grant special actions, buffs etc.
+				USActionComponent* ActionComp = Cast<USActionComponent>(NewBot->GetComponentByClass(USActionComponent::StaticClass()));
+				if (ActionComp)
+				{
+					for (TSubclassOf<USAction> ActionClass : MonsterData->Actions)
+					{
+						ActionComp->AddAction(NewBot, ActionClass);
+					}
+				}
+			}
+		}
 	}
 }

@@ -3,7 +3,9 @@
 
 #include "SActionComponent.h"
 #include "SAction.h"
+#include "../ActionRoguelike.h"
 
+DECLARE_CYCLE_STAT(TEXT("StartActionByName"),STAT_StartActionByName,STATGROUP_STANFORD);  //creating a custom stat to measure cost of a part of the code
 
 // Sets default values for this component's properties
 USActionComponent::USActionComponent()
@@ -26,6 +28,21 @@ void USActionComponent::BeginPlay()
 	}
 }
 
+void USActionComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+
+	//stop all running actions
+	TArray<USAction*> ActionCopy= Actions;
+	for(USAction* Action: ActionCopy)
+	{
+		if(Action && Action->IsRunning())
+		{
+			Action->StopAction(GetOwner());
+		}
+	}
+	Super::EndPlay(EndPlayReason);
+}
+
 
 void USActionComponent::TickComponent(float DeltaTime, ELevelTick TickType,
                                       FActorComponentTickFunction* ThisTickFunction)
@@ -33,7 +50,7 @@ void USActionComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	//Display active tags
-	GEngine->AddOnScreenDebugMessage(-1,0.0f,FColor::White,GetNameSafe(GetOwner()) + " : " + ActiveGamePlayTags.ToStringSimple());
+	//GEngine->AddOnScreenDebugMessage(-1,0.0f,FColor::White,GetNameSafe(GetOwner()) + " : " + ActiveGamePlayTags.ToStringSimple());
 }
 
 
@@ -59,6 +76,7 @@ void USActionComponent::AddAction(AActor* Instigator,TSubclassOf<USAction> Actio
 
 bool USActionComponent::StartActionByName(AActor* Instigator, FName ActionName)
 {
+	SCOPE_CYCLE_COUNTER(STAT_StartActionByName); //defining the scope of the custom stat monitor
 	for (USAction* Action : Actions)
 	{
 		if(Action && Action->ActionName == ActionName)
@@ -73,6 +91,7 @@ bool USActionComponent::StartActionByName(AActor* Instigator, FName ActionName)
 			{
 				ServerStartAction(Instigator,ActionName);
 			}
+			TRACE_BOOKMARK(TEXT("StartAction: %s"), *GetNameSafe(Action));
 			
 			Action->StartAction(Instigator);
 			return true;
@@ -115,3 +134,4 @@ void USActionComponent::ServerStartAction_Implementation(AActor* Instigator, FNa
 {
  StartActionByName(Instigator,ActionName);	
 }
+

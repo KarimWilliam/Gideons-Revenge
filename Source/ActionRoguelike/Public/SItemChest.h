@@ -44,4 +44,5 @@ public:
 
 	void OnActorLoaded_Implementation() override;
 
+	virtual FText GetInteractText_Implementation(APawn* InstigatorPawn) override;
 };

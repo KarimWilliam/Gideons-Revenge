@@ -13,6 +13,9 @@ void USAction::StartAction_Implementation(AActor* Instigator)
 
 	bIsRunning=true;
 
+	TimeStarted=GetWorld()->TimeSeconds;
+
+	GetOwningComponent()->OnActionStarted.Broadcast(GetOwningComponent(),this);
 	
 }
 
@@ -26,6 +29,8 @@ void USAction::StopAction_Implementation(AActor* Instigator)
 	Comp-> ActiveGamePlayTags.RemoveTags(GrantsTags);
 
 	bIsRunning=false;
+
+	GetOwningComponent()->OnActionStopped.Broadcast(GetOwningComponent(),this);
 }
 
 
@@ -38,6 +43,7 @@ UWorld* USAction::GetWorld() const
 	}
 	return nullptr;
 }
+
 
 USActionComponent* USAction::GetOwningComponent() const
 {
@@ -64,3 +70,4 @@ bool USAction::IsRunning() const
 {
 	return bIsRunning;
 }
+

@@ -41,8 +41,7 @@ void ASAICharacter::PostInitializeComponents()
 
 void ASAICharacter::SetTargetActor(AActor* NewTarget)
 {
-	AAIController* AIC = Cast<AAIController>(GetController());
-	if(AIC)
+	if(AAIController* AIC = Cast<AAIController>(GetController()))
 	{
 		AIC->GetBlackboardComponent()->SetValueAsObject("TargetActor",NewTarget);
 	}
@@ -53,7 +52,7 @@ void ASAICharacter::OnPawnSeen(APawn* Pawn)
 {
 	SetTargetActor(Pawn);
 
-		DrawDebugString(GetWorld(),GetActorLocation(),"Payer Spotted",nullptr,FColor::White,4.f,true);
+		//DrawDebugString(GetWorld(),GetActorLocation(),"Payer Spotted",nullptr,FColor::White,4.f,true);
 	}
 
 
@@ -83,8 +82,7 @@ void ASAICharacter::OnHealthChanged(AActor* InstigatorActor, USAttributesCompone
 		if(NewHealth <= 0.0f)//he died
 		{
 			//Stop BT
-			AAIController* AIC = Cast<AAIController>(GetController());
-			if(AIC)
+			if(AAIController* AIC = Cast<AAIController>(GetController()))
 			{
 				AIC->GetBrainComponent()->StopLogic("Killed"); //brain component holds the behavior tree. parent class.
 			}

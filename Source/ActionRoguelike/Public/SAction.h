@@ -39,7 +39,12 @@ public:
 
 	UWorld* GetWorld() const override; //must override this inorder to have functionality visible in bluepirnts. like spawning actors.
 
+
 protected:
+
+	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly,Category="UI")
+	TSoftObjectPtr<UTexture2D> Icon;  //soft object refrence
+	
 	UPROPERTY(EditDefaultsOnly,Category="Tags")
 	FGameplayTagContainer GrantsTags;
 	UPROPERTY(EditDefaultsOnly,Category="Tags")
@@ -49,6 +54,8 @@ protected:
 	USActionComponent* GetOwningComponent() const;
 
 	bool bIsRunning;
+
+	float TimeStarted;
 
 
 };

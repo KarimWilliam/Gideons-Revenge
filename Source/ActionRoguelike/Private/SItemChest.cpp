@@ -39,6 +39,11 @@ void ASItemChest::OnActorLoaded_Implementation()
 	OnRep_LidOpened();
 }
 
+FText ASItemChest::GetInteractText_Implementation(APawn* InstigatorPawn)
+{
+	 return NSLOCTEXT("InteractableActors","InteractableActor_Chest","You can open this for no reason if you like");
+}
+
 void ASItemChest::Interact_Implementation(APawn* InstigatorPawn)
 {
 	bLidOpened = !bLidOpened;

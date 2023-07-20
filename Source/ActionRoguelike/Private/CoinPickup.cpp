@@ -10,6 +10,11 @@ ACoinPickup::ACoinPickup()
 {
 }
 
+FText ACoinPickup::GetInteractText_Implementation(APawn* InstigatorPawn)
+{
+	return NSLOCTEXT("InteractableActors","Coin","Gain 200 Credits");
+}
+
 void ACoinPickup::FHiddenTimer()
 {
 	SetActorHiddenInGame(false);

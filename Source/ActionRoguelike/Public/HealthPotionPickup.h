@@ -32,4 +32,6 @@ protected:
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	virtual FText GetInteractText_Implementation(APawn* InstigatorPawn) override;
 };
