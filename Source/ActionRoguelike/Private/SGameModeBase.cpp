@@ -270,6 +270,12 @@ void ASGameModeBase::InitGame(const FString& MapName, const FString& Options, FS
 //Call LoadSaveGame ASAP. InitGame happens very early in the chain.
 {
 	Super::InitGame(MapName, Options, ErrorMessage);
+
+	FString SelectedSaveSlot= UGameplayStatics::ParseOption(Options,"SaveGame");
+	if(SelectedSaveSlot.Len()>0)
+	{
+		SlotName=SelectedSaveSlot;
+	}
 	LoadSaveGame();
 }
 

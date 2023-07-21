@@ -26,7 +26,7 @@ ASAICharacter::ASAICharacter()
 
 	ActionComp =CreateDefaultSubobject<USActionComponent>("ActionComp");
 	//have projectiles hit the mesh instead of the capsule.
-	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_WorldDynamic,ECR_Ignore);
+	//GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_WorldDynamic,ECR_Ignore);
 	GetMesh()->SetGenerateOverlapEvents(true);
 }
 

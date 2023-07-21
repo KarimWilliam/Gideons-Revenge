@@ -10,10 +10,9 @@
 // Sets default values
 ASGenericProjectile::ASGenericProjectile()
 {
-
 	SetReplicates(true);
-	
-	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you Sdon't need it.
+
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	SphereComp = CreateDefaultSubobject<USphereComponent>("SphereComp");
@@ -29,7 +28,7 @@ ASGenericProjectile::ASGenericProjectile()
 	MovementComp->InitialSpeed = 1000.0f;
 	MovementComp->bRotationRemainsVertical = true;
 	MovementComp->bInitialVelocityInLocalSpace = true;
-	MovementComp->bRotationFollowsVelocity=true;
+	MovementComp->bRotationFollowsVelocity = true;
 
 	AudioComp = CreateDefaultSubobject<UAudioComponent>("AudioComp");
 
