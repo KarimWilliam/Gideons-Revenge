@@ -58,7 +58,7 @@ void ASGameModeBase::SpawnBotTimerElapsed()
 	if (CVarSpawnBots.GetValueOnGameThread())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("SBot spawning disabled via cvar 'CVSpawnots'."))
-		return;
+		//return;
 	}
 
 	//Maximum of 5 bots alive at a time

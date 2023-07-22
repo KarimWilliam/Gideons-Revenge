@@ -39,7 +39,7 @@ void ASExplosiveBarrel::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherAc
 	UE_LOG(LogTemp, Warning, TEXT("OtherActor: %s, at game time :%f"), *GetNameSafe(OtherActor),
 	       GetWorld()->TimeSeconds);
 	FString CombinedString = FString::Printf(TEXT("Hit at location: %s"), *Hit.ImpactPoint.ToString());
-	DrawDebugString(GetWorld(), Hit.ImpactPoint, CombinedString, nullptr, FColor::Green, 2.0f, true);
+	//DrawDebugString(GetWorld(), Hit.ImpactPoint, CombinedString, nullptr, FColor::Green, 2.0f, true);
 	RadialForceComp->FireImpulse();
 }
 

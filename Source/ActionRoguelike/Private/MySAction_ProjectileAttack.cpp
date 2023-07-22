@@ -71,7 +71,7 @@ void UMySAction_ProjectileAttack::AttackDelay_Elapsed(ACharacter* InstigatorActo
 		}
 		//Find new direction/rotation from Hand pointing to impact in world;
 		FRotator ProjRotation = FRotationMatrix::MakeFromX(TraceEnd - HandLocation).Rotator();
-		DrawDebugLine(GetWorld(), HandLocation, TraceEnd, FColor::Green, false, 2.0f, 0, 2.0f);
+		//DrawDebugLine(GetWorld(), HandLocation, TraceEnd, FColor::Green, false, 2.0f, 0, 2.0f);
 
 		FTransform SpawnTM = FTransform(ProjRotation, HandLocation);
 		GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTM, SpawnParams);
